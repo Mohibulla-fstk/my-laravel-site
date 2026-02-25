@@ -1,0 +1,112 @@
+ <table class="table table-bordered table-responsive-sm">
+                            <thead>
+                              <tr>
+                              <tr>
+                                <th style="width:10%">Image</th>
+                                <th style="width:25%">Name</th>
+                                <th style="width:15%">Quantity</th>
+                                <th style="width:12%">Sell Price</th>
+                                <th style="width: 12%;">Coupon</th>
+                                <th style="width: 15%;">Coupon Discount</th>
+                                <th style="width:15%">Extra Discount</th>
+                                <th style="width:15%">Sub Total</th>
+                                <th style="width:15%">Action</th>
+                              </tr>
+                              </tr>
+                            </thead>
+                            <tbody id="cartTable">
+                              @php
+                                $product_discount = 0;
+                              @endphp
+                              @foreach($cartinfo as $key=>$value)
+                              <tr>
+                                <td> @if(isset($value->options->is_combo) && $value->options->is_combo)
+            {{-- Combo Image --}}
+            <img style="width: 50px;" src="{{ asset($value->options->combo_image ?? 'public/uploads/default/user.png') }}" alt="Combo Image">
+        @else
+            {{-- Product Image --}}
+            <img style="width: 50px;" src="{{ asset($value->options->image ?? 'public/default.png') }}" alt="Product Image">
+        @endif</td>
+                                <td>{{$value->name}} 
+                                @php
+                                    $product = App\Models\Product::find($value->id);
+                                @endphp
+                             
+                               @if($product && ($product->sizes->isNotEmpty() || $product->colors->isNotEmpty()))
+                                <div class="row g-1">
+                                    <!-- Size Selector -->
+                                    @if($product->sizes->isNotEmpty())
+                                    <div class="col-md-6">
+                                        <select id="size-selector-{{ $value->rowId }}" class="form-select form-select-sm cart-size-selector" data-id="{{ $value->rowId }}">
+                                            @foreach($product->sizes as $size)
+                                            <option value="{{ $size->sizeName }}" {{ $size->sizeName == $value->options->product_size ? 'selected' : '' }}>
+                                                {{ $size->sizeName }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                        <label for="size-selector-{{ $value->rowId }}" class="form-label text-muted text-start" style="font-size: 0.875rem;">Size:
+                                        @if($value->options->product_size)
+                                          {{$value->options->product_size}}
+                                        @endif
+                                        </label>
+                                    </div>
+                                    @endif
+                                
+                                    <!-- Color Selector -->
+                                    @if($product->colors->isNotEmpty())
+                                    <div class="col-md-6">
+                                        <select id="color-selector-{{ $value->rowId }}" class="form-select form-select-sm cart-color-selector" data-id="{{ $value->rowId }}">
+                                            @foreach($product->colors as $color)
+                                            <option value="{{ $color->colorName }}" {{ $color->colorName == $value->options->product_color ? 'selected' : '' }}>
+                                                {{ $color->colorName }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                        <label for="color-selector-{{ $value->rowId }}" class="form-label text-muted text-start" style="font-size: 0.875rem;">Color:
+                                        @if($value->options->product_color)
+                                           {{ $value->options->product_color }}
+                                        @endif
+                                        </label>
+                                    </div>
+                                    @endif
+                                </div>
+                                @endif
+                                
+                                </td>
+                                <td>
+                                  <div class="qty-cart vcart-qty">
+                                    <div class="quantity">
+                                        <button class="minus cart_decrement" value="{{$value->qty}}"  data-id="{{$value->rowId}}">-</button>
+                                        <input type="text" value="{{$value->qty}}" readonly />
+                                        <button class="plus cart_increment" value="{{$value->qty}}" data-id="{{$value->rowId}}">+</button>
+                                    </div>
+                                </div>
+                                </td>
+                                
+                                <td>{{$value->price}}</td>
+                                <td>@if($order->coupon)
+    <p>Coupon Applied: {{ $order->coupon->code }}</p>
+    <p>Coupon Type: {{ $order->coupon->type }}</p>
+    <p>Coupon Value: {{ $order->coupon->value }}</p>
+    <p>Coupon : {{ $order->coupon->max_discount ?? 0}}</p>
+@else
+    <p>Coupon Applied: None</p>
+@endif
+</td>                            <td>{{ $order->coupon->max_discount ?? 0 }}</td>
+                                </td>
+                                <td class="discount"><input type="number" class="product_discount" value="{{$value->options->product_discount ?? 0}}" placeholder="0.00" data-id="{{$value->rowId}}">
+  </td>
+                                
+                                <td>{{($value->price - $value->options->product_discount)*$value->qty}}</td>
+                                <td><button type="button" class="btn btn-danger btn-xs cart_remove" data-id="{{$value->rowId}}"><i class="fa fa-times"></i></button></td>
+                              </tr>
+                              @php
+                              $product_discount = Session::get('product_discount');
+                              @endphp
+                              @php
+  $product_discount += $value->options->product_discount*$value->qty;
+  Session::put('product_discount',$product_discount);
+@endphp
+                              @endforeach
+                            </tbody>
+                          </table>

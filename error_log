@@ -1,0 +1,12 @@
+[10-Dec-2025 16:23:34 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function opcache_reset() in Command line code:1
+Stack trace:
+#0 {main}
+  thrown in Command line code on line 1
+[10-Dec-2025 16:23:43 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function opcache_reset() in Command line code:1
+Stack trace:
+#0 {main}
+  thrown in Command line code on line 1
+[10-Dec-2025 16:24:49 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function opcache_reset() in Command line code:1
+Stack trace:
+#0 {main}
+  thrown in Command line code on line 1

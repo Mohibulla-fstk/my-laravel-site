@@ -1,0 +1,58 @@
+.cetegorybutton a {
+    display: inline-block;
+    margin: 4px 5px;
+    width: fit-content;
+    padding: 5px 8px;
+    border-radius: 100px;
+}
+.cetegorybutton a:nth-child(1) {
+    background: #e7e9ff;
+    color: #3e4eff;
+}
+.cetegorybutton a:nth-child(2) {
+    background: #f5e7ff;
+    color: #dc3eff;
+}
+.cetegorybutton a:nth-child(3) {
+    background: #ffe7fd;
+    color: #ff3ec5;
+}
+.cetegorybutton a:nth-child(4) {
+    background: #f3e7ff;
+    color: #783eff;
+}
+.cetegorybutton a:nth-child(5) {
+    background: #e7faff;
+    color: #3ecfff;
+}
+.cetegorybutton a:nth-child(6) {
+    background: #e7fff9;
+    color: #2fd797;
+}
+.cetegorybutton a:nth-child(7) {
+    background: #ffe7e7;
+    color: #ff3e3e;
+}
+.cetegorybutton a:nth-child(8) {
+    background: #fff5dd;
+    color: #d89a2f;
+}
+.cetegorybutton a:nth-child(9) {
+    background: #ffe7fd;
+    color: #ff3ec5;
+}
+.cetegorybutton a:nth-child(10) {
+    background: #e7e9ff;
+    color: #3e4eff;
+}
+.cetegorybutton a:nth-child(11) {
+    background: #f5e7ff;
+    color: #dc3eff;
+}
+.cetegorybutton a:nth-child(12) {
+    background: #ffe7fd;
+    color: #ff3ec5;
+}
+.cetegorybutton a:hover {
+    opacity: 0.6;
+}

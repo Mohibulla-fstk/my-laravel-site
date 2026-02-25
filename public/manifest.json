@@ -1,0 +1,73 @@
+{
+  "resources/css/app.css": {
+    "file": "css/all2.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/fonts/Li-Alinur-Banglaborno-Unicode.ttf": {
+    "file": "css/Li-Alinur-Banglaborno-Unicode-CjsIiC6E.ttf",
+    "src": "resources/fonts/Li-Alinur-Banglaborno-Unicode.ttf"
+  },
+  "resources/fonts/Potro-Sans-Bangla-Regular.ttf": {
+    "file": "css/Potro-Sans-Bangla-Regular-d90lprt-.ttf",
+    "src": "resources/fonts/Potro-Sans-Bangla-Regular.ttf"
+  },
+  "resources/js/app.js": {
+    "file": "js/app.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "css": [
+      "css/all.css",
+      "css/all2.css"
+    ],
+    "assets": [
+      "css/fa-brands-400-D7FHzq6v.woff2",
+      "css/fa-brands-400-DdZYYRL9.ttf",
+      "css/fa-regular-400-Dekxkkk6.woff2",
+      "css/fa-regular-400-DbJaCkzU.ttf",
+      "css/fa-solid-900-DNtOTRde.woff2",
+      "css/fa-solid-900-D4yHp-o0.ttf",
+      "css/fa-v4compatibility-BUAqpGjd.woff2",
+      "css/fa-v4compatibility-B73zkE9D.ttf",
+      "css/Potro-Sans-Bangla-Regular-d90lprt-.ttf",
+      "css/Li-Alinur-Banglaborno-Unicode-CjsIiC6E.ttf"
+    ]
+  },
+  "resources/webfonts/fa-brands-400.ttf": {
+    "file": "css/fa-brands-400-DdZYYRL9.ttf",
+    "src": "resources/webfonts/fa-brands-400.ttf"
+  },
+  "resources/webfonts/fa-brands-400.woff2": {
+    "file": "css/fa-brands-400-D7FHzq6v.woff2",
+    "src": "resources/webfonts/fa-brands-400.woff2"
+  },
+  "resources/webfonts/fa-regular-400.ttf": {
+    "file": "css/fa-regular-400-DbJaCkzU.ttf",
+    "src": "resources/webfonts/fa-regular-400.ttf"
+  },
+  "resources/webfonts/fa-regular-400.woff2": {
+    "file": "css/fa-regular-400-Dekxkkk6.woff2",
+    "src": "resources/webfonts/fa-regular-400.woff2"
+  },
+  "resources/webfonts/fa-solid-900.ttf": {
+    "file": "css/fa-solid-900-D4yHp-o0.ttf",
+    "src": "resources/webfonts/fa-solid-900.ttf"
+  },
+  "resources/webfonts/fa-solid-900.woff2": {
+    "file": "css/fa-solid-900-DNtOTRde.woff2",
+    "src": "resources/webfonts/fa-solid-900.woff2"
+  },
+  "resources/webfonts/fa-v4compatibility.ttf": {
+    "file": "css/fa-v4compatibility-B73zkE9D.ttf",
+    "src": "resources/webfonts/fa-v4compatibility.ttf"
+  },
+  "resources/webfonts/fa-v4compatibility.woff2": {
+    "file": "css/fa-v4compatibility-BUAqpGjd.woff2",
+    "src": "resources/webfonts/fa-v4compatibility.woff2"
+  }
+}

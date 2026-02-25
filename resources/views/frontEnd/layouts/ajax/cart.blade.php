@@ -1,0 +1,449 @@
+
+@php
+    $applied = session('coupon');
+
+    // Cart subtotal
+    $subtotal = Cart::instance('shopping')->subtotal();
+    $subtotal = str_replace(',', '', $subtotal);
+    $subtotal = str_replace('.00', '', $subtotal);
+
+    // Shipping
+    $shipping = Session::get('shipping') ?? 0;
+
+    // Discount & shipping discount (product-specific)
+    $discount = $applied['discount'] ?? 0;
+    $shipOff = $applied['shipping_discount'] ?? 0;
+
+    // If product-specific coupon, use session subtotal for that product
+    if ($applied && isset($applied['product_id'])) {
+        $productId = $applied['product_id'];
+        $productPrice = 0;
+        foreach (Cart::instance('shopping')->content() as $cartItem) {
+            if ($cartItem->id == $productId) {
+                $productPrice = $cartItem->price * $cartItem->qty;
+            }
+        }
+        $subtotal = $productPrice;
+    }
+
+    $grandTotal = max(0, ($subtotal - $discount) + max(0, $shipping - $shipOff));
+    
+@endphp
+
+ <div class="card-header1" style="padding: 8px 0px;">
+                                    <h3>Your order</h3>
+                                </div>
+                                <div class="order-wrapper" id="orderWrapper">
+                                    <div class="shipping-progress">
+                                        <div class="progress-filled"></div>
+                                        <div class="truck-icon"><i class="fa-sharp fa-light fa-truck"></i></div>
+                                    </div>
+                                    <p id="shippingText" style="font-size: 14px">
+                                        Buy <strong><span id="remainingAmount">0.00</span>৳</strong> more to enjoy <strong>FREE SHIPPING</strong>
+                                    </p>
+                                </div>
+                                <div class="card-body " style="padding: 20px;margin-top:20px; border:1px solid #e2e2e2;background:#fbfbfc">
+<p style="font-weight: bold; font-size: 15px">Product</p>
+<table class="cart_table table table-bordered table-striped text-center mb-0">
+
+    <div class="checkoutareacart" >
+                                
+
+                                                @foreach (Cart::instance('shopping')->content() as $value)
+
+                                                   <div class="partCot">
+                                                     <div class="productcartshowareaforcheckout">
+                                  
+                                                       <div class="cartimgforcheckout">
+    <a href="{{$value->options->get('is_combo') && $value->options->get('is_combo')
+                ? route('combo.show', $value->options->slug) 
+                : route('product', $value->options->slug) }}">
+        
+        @if(isset($value->options->is_combo) && $value->options->is_combo)
+            {{-- Combo Image --}}
+            <img style="width: 130px; height:auto;" src="{{ asset($value->options->combo_image ?? 'public/uploads/default/user.png') }}" alt="Combo Image">
+        @else
+            {{-- Product Image --}}
+            <img style="width: 130px; height:auto;" src="{{ asset($value->options->image ?? 'public/default.png') }}" alt="Product Image">
+        @endif
+    </a>
+</div>
+
+                                                        <div class="cartpriceforcheckout">
+                                                            <div class="tyepset">
+                                                                <div class="name1sttype">
+                                                                  <a href="{{$value->options->get('is_combo') && $value->options->get('is_combo')
+                ? route('combo.show', $value->options->slug) 
+                : route('product', $value->options->slug) }}">
+                                                            <h4 style="font-size: 16px">  {{ Str::limit($value->name, 200) }}   @if($value->options->get('is_combo'))
+                                <span class="badge bg-warning" style="margin-left:5px;">Combo</span>
+                            @endif
+                        </h4>
+                                                            </a>
+                                                            </div>
+                                                            <div class="name2ndtype">
+
+                                                              @php
+                        $product = App\Models\Product::find($value->id);
+                    @endphp
+
+                    @if($product && ($product->sizes->isNotEmpty() || $product->colors->isNotEmpty()))
+                        <div class="row g-1 mt-2">
+                            <!-- Size Selector -->
+                            @if($product->sizes->isNotEmpty())
+                                <div class="col-6">
+
+                                    <select style="font-size: 13px" id="size-selector-{{ $value->rowId }}"
+                                        class="form-select form-select-sm cart-size-selector" data-id="{{ $value->rowId }}">
+                                        <option>Select an option</option>
+                                        @foreach($product->sizes as $size)
+                                            <option value="{{ $size->sizeName }}" {{ $size->sizeName == $value->options->product_size ? 'selected' : '' }}>
+                                                {{ $size->sizeName }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <label for="size-selector-{{ $value->rowId }}" class="form-label text-muted text-start"
+                                        style="font-size: 12px;">Size:
+                                        @if($value->options->product_size)
+                                            {{$value->options->product_size}}
+                                        @endif
+                                    </label>
+                                </div>
+                            @endif
+
+                            <!-- Color Selector -->
+                            @if($product->colors->isNotEmpty())
+                                <div class="col-6">
+                                    <select style="font-size: 13px" id="color-selector-{{ $value->rowId }}"
+                                        class="form-select form-select-sm cart-color-selector" data-id="{{ $value->rowId }}">
+                                        <option>Select an option</option>
+                                        @foreach($product->colors as $color)
+                                            <option value="{{ $color->colorName }}" {{ $color->colorName == $value->options->product_color ? 'selected' : '' }}>
+                                                {{ $color->colorName }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <label for="color-selector-{{ $value->rowId }}" class="form-label text-muted text-start"
+                                        style="font-size: 12px;">Color:
+                                        @if($value->options->product_color)
+                                            {{ $value->options->product_color }}
+                                        @endif
+                                    </label>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                                                     
+                                                            </div>
+                                                             <div class="name3rdtype">
+                                                      <div class="cartandremovebtnset">
+                                                            <div class="customquantity"
+                            style="border:1px solid #ff9900; border-radius: 0; background: none;">
+                            <button type="button"
+                                style="border-right:1px solid #ff9900; border-radius: 0; background: none;"
+                                class=" ctrl cart_decrementt"
+                                data-id="{{ $value->rowId }}" aria-label="decrease">−</button>
+                            <div class="value-box">
+                                <input type="text" class="qty-input" value="{{ $value->qty }}" readonly
+                                    aria-label="quantity" />
+                            </div>
+                            <button style="border-left:1px solid #ff9900; border-radius: 0; background: none;"
+                                type="button" class="ctrl cart_incrementt" data-id="{{ $value->rowId }}"
+                                aria-label="increase">+</button>
+                        </div>
+                                   <div class="btnforremovecheckout">
+                                      <a class="cart_remove" data-id="{{ $value->rowId }}"><i class="fa-solid fa-trash-xmark"></i></a>
+                                   </div>
+                                                      </div>
+                                    
+                                                      </div>
+                                                            </div>
+                                                      <div class="nametypeprice" style="text-align: end">
+  <strong>{{ $value->price }} ৳</strong>
+                                                        </div>
+                                                        </div>
+                                                        
+                                                    
+                                                        
+
+                                                    </div>
+                                                      <div class="comboProductcartSection">
+         @if($value->options->get('is_combo'))
+ 
+       
+    <div id="combo-items-{{ $loop->index }}" class="combo-inner-products" style=" margin-top:5px;">
+        @foreach($value->options->get('combo_items') ?? [] as $p)
+            <div class="productcartshowarea productcartpart2forcombo" style="display: grid; grid-template-columns:10% 20% 40% 30%; gap: 0px; margin-bottom:5px; padding-bottom:5px;">
+                <div class="sideblankspace"></div>
+                {{-- ✅ Image --}}
+                <div class="part-imgpcart">
+                 
+                    <a class="cart-photo" href="#">
+                        
+                        <img src="{{ asset($p['image']) }}" alt="{{ $p['name'] }}" style="width:100%; object-fit:cover;" />
+                    </a>
+            
+                </div>
+
+                {{-- ✅ Name + Details --}}
+                <div class="part-namepcart">
+                    <div class="highsection">
+                        <div class="cartmiddlepart">
+                            <div class="productnamecartsection">
+                                <a class="ppricecart" href="#">{{ Str::limit($p['name'], 40) }}</a>
+                                @if($p['is_combo'] ?? false)
+                                    <span class="badge bg-warning" style="margin-left:5px;">Combo</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- ✅ Color & Size --}}
+                        <div class="size-part">
+                            <p>Size - {{ $p['size'] ?? 'N/A' }}</p>
+                            <p>Color - {{ $p['color'] ?? 'N/A' }}</p>
+                            <p>Quantity - {{ $value->qty }}</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                  <div class="secpricecart" style="text-align: right;">
+                    <span class="cartprice" data-price="{{ $value->price }}">
+                        {{ $value->price }} ৳
+                    </span>
+                    </span>
+                </div>
+            </div>
+        @endforeach
+    </div>
+@endif
+
+   </div>
+                                                   </div>
+                                                @endforeach
+                                        
+                                        </div>
+   <tfoot>
+                                            <tr style="border: none">
+                                                <th colspan="3" class="text-start px-2" style="border: none; font-weight: 500; font-size:14px;">Subtotal</th>
+                                                <td class="text-end px-2" style="border: none; font-weight: 500; font-size:14px;">
+                                                    <span id="net_total"><span
+                                                            class="alinur"></span><strong>{{ number_format($subtotal, 2) }}
+                                                            ৳</strong></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="3" class="text-start px-2" style="border: none; font-weight: 500; font-size:14px;">Delivery Charge</th>
+                                                <td class="text-end px-2" style="border: none; font-weight: 500; font-size:14px;">
+                                                    <span id="cart_shipping_cost"><span
+                                                            class="alinur"></span><strong>{{ number_format($shipping, 2) }}
+                                                            ৳</strong></span>
+                                                </td>
+                                            </tr>
+                                            <tr id="couponRow" style="{{ $applied ? '' : 'display:none;' }}">
+                                                <th colspan="3" class="text-start px-2" style="border: none; font-weight: 500; font-size:14px;">Coupon Discount</th>
+                                                <td class="text-end px-2" style="border: none; font-weight: 500; font-size:14px;">
+                                                    <span id="discount_amount"><span
+                                                            class="alinur"></span><strong>-{{ number_format($discount, 2) }}
+                                                            ৳</strong></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="3" class="text-start px-2" style="border: none; font-weight: 500;font-size:14px;">Shipping Discount</th>
+                                                <td class="text-end px-2" style="border: none; font-weight: 500;font-size:14px;">
+                                                    <span id="ship_discount_amount"><span
+                                                            class="alinur"></span><strong>{{ number_format($shipOff, 2) }}
+                                                            ৳</strong></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="3" class="text-start px-2" style="border: none; font-size:20px;">Total</th>
+                                                <td class="text-end px-2" style="border: none;">
+                                                    <span id="grand_total" style="font-size:20px"><span
+                                                            class="alinur"></span><strong>{{ number_format($grandTotal, 2) }}
+                                                            ৳</strong></span>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+</table>
+<div class="card-footer text-danger" style="margin-top:10px;border-left: 4px solid red; padding-left:10px">
+                                    {!! $generalsetting->checkout_note !!}
+                                </div>
+                                </div>
+                                
+<script src="{{asset('public/frontEnd/js/jquery-3.6.3.min.js')}}"></script>
+
+<script>
+     const freeShippingTarget = {{ $generalsetting->free_shipping ?? 0 }};
+
+
+// Function to update progress bar & colors
+function updateFreeShippingProgress(cartTotal) {
+    setTimeout(() => {
+    const progress = Math.min(100, (cartTotal / freeShippingTarget) * 100);
+    const remaining = Math.max(0, freeShippingTarget - cartTotal);
+
+    const progressBar = document.querySelector('.progress-filled');
+    const truck = document.querySelector('.truck-icon');
+
+    progressBar.style.width = progress + '%';
+    truck.style.left = progress + '%';
+
+    if(progress >= 100){
+        progressBar.classList.add('success');
+        progressBar.classList.remove('warning','danger');
+        truck.classList.add('success');
+        $('#shippingText').html('<span class="success-text">Congratulations! You have got FREE SHIPPING!</span>');
+    } else if(progress >= 60){
+        progressBar.classList.add('warning');
+        progressBar.classList.remove('success','danger');
+        truck.classList.add('warning');
+        truck.classList.remove('success','danger');
+        $('#remainingAmount').text(remaining.toFixed(2));
+    } else {
+        progressBar.classList.add('danger');
+        progressBar.classList.remove('success','warning');
+        truck.classList.add('danger');
+        truck.classList.remove('success','warning');
+        
+        $('#remainingAmount').text(remaining.toFixed(2));
+    }
+     }, 300);
+}
+
+// Initial load
+updateFreeShippingProgress(parseFloat($('#net_total').text().replace(/[^\d.-]/g,'')) || 0);
+
+
+$(document).ready(function() {
+
+    let subtotal = parseFloat(`{{ $subtotal }}`) || 0;
+    let discount = parseFloat(`{{ $discount }}`) || 0;
+    let shipDiscount = parseFloat(`{{ $shipOff }}`) || 0;
+
+    // 🔴 IMPORTANT: initial shipping = 0
+    let shippingCharge = 0;
+
+    // 🔹 Page load এ forcefully 0 দেখাও
+    $('#area').val(0);
+    $('#cart_shipping_cost strong').text('0.00 ৳');
+
+    let initialGrandTotal = subtotal - discount - shipDiscount;
+    $('#grand_total strong').text(initialGrandTotal.toFixed(2) + ' ৳');
+
+    // 🔹 Area change
+    $('#area').on('change', function () {
+
+        let areaId = $(this).val();
+
+        if (areaId == 0) {
+            shippingCharge = 0;
+        } else {
+            shippingCharge = parseFloat($(this).find(':selected').data('charge')) || 0;
+        }
+
+        let newGrandTotal = subtotal + shippingCharge - discount - shipDiscount;
+
+        $('#cart_shipping_cost strong').text(shippingCharge.toFixed(2) + ' ৳');
+        $('#grand_total strong').text(newGrandTotal.toFixed(2) + ' ৳');
+    });
+
+});
+</script>
+<!-- cart js start -->
+<script>
+ 
+
+    function cart_count() {
+            $.ajax({
+                type: "GET",
+                url: "{{route('cart.count')}}",
+                success: function (data) {
+                    if (data) {
+                        $("#cart-qty").html(data);
+                    } else {
+                        $("#cart-qty").empty();
+                    }
+                },
+            });
+        }
+    $(document).on("click", ".cart_removee", function() {
+                var id = $(this).data("id");
+                if (!id) return;
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('cart.remove') }}",
+                    data: { id: id },
+                    success: function(data) {
+                        if (data) {
+                            $(".cartlist").html(data);
+                            reloadCartMenu();   // Update main cart HTML
+                            cart_count();             // Update cart count
+                            mobile_cart();            // Update mobile cart
+                            cart_summary();           // Update cart summary
+                                // Reload cart menu including combo products
+
+                            // Update free shipping progress
+                            let subtotal = parseFloat($("#net_total").text().replace(/[^\d.-]/g,'')) || 0;
+                            updateFreeShippingProgress(subtotal);
+                        }
+                    },
+                    error: function(err){
+                        console.log("Remove error:", err);
+                    }
+                });
+            });
+
+        $(".cart_incrementt").on("click", function() {
+        var id = $(this).data("id");
+        if (!id) return;
+
+        $.ajax({
+            type: "GET",
+            url: "{{ route('cart.increment') }}",
+            data: { id: id },
+            success: function(data) {
+                if (data) {
+                    $(".cartlist").html(data); // Update cart HTML
+                    cart_count();
+                    mobile_cart();
+                    reloadCartMenu();
+                    // Update free shipping progress
+                    let subtotal = parseFloat($("#net_total").text().replace(/[^\d.-]/g,'')) || 0;
+                    updateFreeShippingProgress(subtotal);
+                }
+            },
+            error: function(err){
+                console.log("Increment error:", err);
+            }
+        });
+        });
+
+        $(".cart_decrementt").on("click", function() {
+        var id = $(this).data("id");
+        if (!id) return;
+
+        $.ajax({
+            type: "GET",
+            url: "{{ route('cart.decrement') }}",
+            data: { id: id },
+            success: function(data) {
+                if (data) {
+                    $(".cartlist").html(data); // Update cart HTML
+                    cart_count();
+                    mobile_cart();
+                    reloadCartMenu();
+                    // Update free shipping progress
+                    let subtotal = parseFloat($("#net_total").text().replace(/[^\d.-]/g,'')) || 0;
+                    updateFreeShippingProgress(subtotal);
+                }
+            },
+            error: function(err){
+                console.log("Decrement error:", err);
+            }
+        });
+        });
+
+</script>
+
+<!-- cart js end -->

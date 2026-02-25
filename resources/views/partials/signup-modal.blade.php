@@ -1,0 +1,70 @@
+<!-- Login Modal -->
+<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: none; border: none;">
+
+            <div class="modal-body">
+                <div class="form-content">
+                    <p class="auth-title"> Sign up</p>
+                    <form action="{{route('customer.store')}}" method="POST" data-parsley-validate="">
+                        @csrf
+                        <div class="form-group mb-3">
+
+                            <input type="text" id="name" class="form-control @error('name') is-invalid @enderror"
+                                name="name" value="{{ old('name') }}" required>
+                            <label class="namelabel" for="name">Your Name</label>
+                            @error('name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <!-- col-end -->
+                        <div class="form-group mb-3">
+
+                            <input type="number" id="phone" class="form-control @error('phone') is-invalid @enderror"
+                                name="phone" value="{{ old('phone') }}" required>
+                            <label class="phonelabel" for="phone"> Phone Number</label>
+                            @error('phone')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <!-- col-end -->
+                        <!--<div class="form-group mb-3">-->
+                        <!--    <label for="email"> ইমেইল </label>-->
+                        <!--    <input type="email" id="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="ইমেইল">-->
+                        <!--    @error('email')-->
+                        <!--        <span class="invalid-feedback" role="alert">-->
+                        <!--            <strong>{{ $message }}</strong>-->
+                        <!--        </span>-->
+                        <!--    @enderror-->
+                        <!--</div>-->
+                        <!-- col-end -->
+                        <div class="form-group mb-3">
+
+                            <input type="password" id="password"
+                                class="form-control @error('password') is-invalid @enderror" name="password"
+                                value="{{ old('password') }}" required>
+                            <label class="passlabel" for="password"> Password </label>
+                            @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <!-- col-end -->
+                        <button class="submit-btn">Sign up</button>
+                        <div class="register-now no-account">
+                            <p><i class="fa-solid fa-user"></i> If registered?</p>
+                            <a data-bs-toggle="modal" data-bs-target="#loginModal"><i data-feather="edit-3"></i> Log in
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

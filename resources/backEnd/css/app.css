@@ -1,0 +1,10 @@
+@charset "UTF-8";
+/* app.css */
+
+/* resources/backEnd/css/app.css */
+@import 'bootstrap.css';
+@import 'custom.css';
+@import 'app1.css';
+/* অথবা copy সব CSS content এক সাথে paste করতে পারেন */
+
+@import url("https://site-assets.fontawesome.com/releases/v7.0.0/css/all.css");
