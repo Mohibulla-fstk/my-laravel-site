@@ -10,8 +10,9 @@ RUN npm install
 # Copy app source code
 COPY . .
 
-# Copy .env if you need environment variables for Vite
-COPY .env .env
+ARG VITE_APP_URL
+ENV VITE_APP_URL=$VITE_APP_URL
+
 
 # Build frontend
 RUN npm run build
@@ -46,3 +47,4 @@ RUN php artisan config:clear && \
 EXPOSE 9000
 
 CMD ["php-fpm"]
+
