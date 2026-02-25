@@ -11,7 +11,7 @@ RUN npm install
 COPY . .
 
 ARG VITE_APP_URL
-ENV VITE_APP_URL=$VITE_APP_URL
+ENV VITE_APP_URL=${VITE_APP_URL}
 
 
 # Build frontend
@@ -47,4 +47,5 @@ RUN php artisan config:clear && \
 EXPOSE 9000
 
 CMD ["php-fpm"]
+
 
