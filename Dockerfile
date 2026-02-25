@@ -12,7 +12,7 @@ COPY . .
 
 ARG VITE_APP_URL
 ENV VITE_APP_URL=${VITE_APP_URL}
-
+ENV NODE_OPTIONS=--max_old_space_size=512
 
 # Build frontend
 RUN npm run build
@@ -47,5 +47,6 @@ RUN php artisan config:clear && \
 EXPOSE 9000
 
 CMD ["php-fpm"]
+
 
 
